@@ -39,3 +39,18 @@ IN ('TFSA', 'RRSP') — correct multi-value filter
 GROUP_CONCAT — collapses multiple account types into one row
 GROUP BY c.customer_id — one row per customer
 */
+/*Q3.The branch manager at each TD location wants to see how many active customers are registered at their branch and the total balance held across all those customers' accounts. Include branches even if they currently have zero customers.*/
+USE bankcore;
+SELECT 
+b.branch_name,
+COUNT(c.customer_id) AS active_customers,
+SUM(a.balance) AS total_balance
+ FROM branches b
+LEFT JOIN customers c ON c.branch_id=b.branch_id AND  c.is_active = 1
+LEFT JOIN accounts a ON a.customer_id = c.customer_id 
+GROUP BY branch_name;
+
+/*LEFT JOIN branches → customers — keeps branches with zero customers
+AND c.is_active = 1 in the JOIN — filters inactive customers without killing empty branches
+LEFT JOIN accounts ON a.customer_id = c.customer_id — balances tied to active customers only
+GROUP BY b.branch_name — one row per branch */
