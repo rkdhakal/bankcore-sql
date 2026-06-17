@@ -54,3 +54,22 @@ GROUP BY branch_name;
 AND c.is_active = 1 in the JOIN — filters inactive customers without killing empty branches
 LEFT JOIN accounts ON a.customer_id = c.customer_id — balances tied to active customers only
 GROUP BY b.branch_name — one row per branch */
+/*Q4. Compliance needs a list of customers who have made more than 5 Interac e-Transfers in a single month. Show customer name, month, and total amount transferred.*/
+SELECT 
+    c.first_name,
+    c.last_name,
+    DATE_FORMAT(t.transaction_date, '%Y-%m') AS txn_month,
+    SUM(t.amount) AS total_transferred,
+    COUNT(t.transaction_id) AS transfer_count
+FROM customers c
+INNER JOIN accounts a ON c.customer_id = a.customer_id
+INNER JOIN transactions t ON t.account_id = a.account_id
+WHERE t.transaction_type = 'Interac e-Transfer'
+GROUP BY c.customer_id, c.first_name, c.last_name, txn_month 
+HAVING transfer_count > 5;
+
+/*DATE_FORMAT — extracts year-month for proper monthly grouping
+SUM + COUNT — total amount and transaction count per group
+WHERE — filters to Interac e-Transfers before aggregating
+GROUP BY customer + month — one row per customer per month
+HAVING transfer_count > 5 — filters after aggregation*/
