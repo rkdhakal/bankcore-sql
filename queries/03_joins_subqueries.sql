@@ -54,6 +54,7 @@ GROUP BY branch_name;
 AND c.is_active = 1 in the JOIN — filters inactive customers without killing empty branches
 LEFT JOIN accounts ON a.customer_id = c.customer_id — balances tied to active customers only
 GROUP BY b.branch_name — one row per branch */
+
 /*Q4. Compliance needs a list of customers who have made more than 5 Interac e-Transfers in a single month. Show customer name, month, and total amount transferred.*/
 SELECT 
     c.first_name,
@@ -73,3 +74,5 @@ SUM + COUNT — total amount and transaction count per group
 WHERE — filters to Interac e-Transfers before aggregating
 GROUP BY customer + month — one row per customer per month
 HAVING transfer_count > 5 — filters after aggregation*/
+
+/*Q5. The collections team needs all customers whose loan is either Defaulted or In Arrears, along with their phone number, email, credit score, and outstanding principal.*/
